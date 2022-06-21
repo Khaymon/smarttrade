@@ -1,5 +1,5 @@
 # RL trading algorithms
-RL algorithms for high-frequency trading
+RL algorithms for high-frequency trading.
 
 ## To-do
 - [ ] Add FC architecture
