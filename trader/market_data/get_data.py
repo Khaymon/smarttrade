@@ -76,21 +76,12 @@ def get_data(config_data: dict):
         data["ticker"] = ticker
         data_frames.append(data)
 
-    return data_frames
-
-
-if __name__ == "__main__":
-    with open("config.json", "r") as config_file:
-        config_data = json.load(config_file)
-
-    data_frames = get_data(config_data)
     assert len(data_frames) == len(config_data["tickers"])
 
     result_df = pd.concat(data_frames)
+    result_df.drop(["vw", "n"], axis=1, inplace=True)
     result_df.rename({
         "v": "volume",
-        "vw": "volume_weighted",
-        "n": "transactions_number",
         "o": "open",
         "c": "close",
         "h": "high",
@@ -99,5 +90,14 @@ if __name__ == "__main__":
     }, axis=1, inplace=True)
     result_df.reset_index(drop=True, inplace=True)
 
+    return result_df
+
+
+if __name__ == "__main__":
+    with open("config.json", "r") as config_file:
+        config_data = json.load(config_file)
+
+    data_frames = get_data(config_data)
+
     dataset_path = os.path.join("./datasets", config_data["dataset_name"]) + ".csv"
-    result_df.to_csv(dataset_path)
+    data_frames.to_csv(dataset_path)
