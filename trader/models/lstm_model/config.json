@@ -1,0 +1,8 @@
+{
+    "datasets": ["tickers_sample"],
+    "result_name": "lstm_train_dataset",
+    "time_interval": 15,
+    "time_units": "minute",
+    "window": 15,
+    "date_column": "date"
+}
