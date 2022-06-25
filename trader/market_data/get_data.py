@@ -97,6 +97,7 @@ if __name__ == "__main__":
         "l": "low",
         "t": "date"
     }, axis=1, inplace=True)
-    dataset_path = os.path.join("./datasets", config_data["dataset_name"]) + ".csv"
+    result_df.reset_index(drop=True, inplace=True)
 
+    dataset_path = os.path.join("./datasets", config_data["dataset_name"]) + ".csv"
     result_df.to_csv(dataset_path)
