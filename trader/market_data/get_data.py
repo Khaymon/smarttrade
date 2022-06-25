@@ -3,6 +3,7 @@ import datetime
 import time
 import re
 from typing import List
+import os
 
 import requests
 from tqdm import tqdm
@@ -84,3 +85,18 @@ if __name__ == "__main__":
 
     data_frames = get_data(config_data)
     assert len(data_frames) == len(config_data["tickers"])
+
+    result_df = pd.concat(data_frames)
+    result_df.rename({
+        "v": "volume",
+        "vw": "volume_weighted",
+        "n": "transactions_number",
+        "o": "open",
+        "c": "close",
+        "h": "high",
+        "l": "low",
+        "t": "date"
+    }, axis=1, inplace=True)
+    dataset_path = os.path.join("./datasets", config_data["dataset_name"]) + ".csv"
+
+    result_df.to_csv(dataset_path)
