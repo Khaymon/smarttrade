@@ -1,4 +1,4 @@
-from .stocks_data_task import StocksDataTask
+from ..stocks_data_task import StocksDataTask
 import numpy as np
 from typing import List
 
