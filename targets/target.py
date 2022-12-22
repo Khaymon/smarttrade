@@ -1,23 +1,15 @@
-from stock_data import StockData
+from .task import Task
 
 import pandas as pd
-from enum import IntEnum
-from typing import Any
-
-
-class Task(IntEnum):
-    REGRESSION = 0
-    CLASSIFICATION = 1
+from typing import List, Any
 
 
 class Target:
-    def __init__(self, task: Task = None, target: pd.Series = None) -> None:
+    def __init__(self, ticker: str, task: Task, target: pd.Series) -> None:
+        self.ticker = ticker
         self.task = task
         self.target = target
-    
-    def _calculate(self, stock_data: StockData) -> pd.Series:
-        raise NotImplementedError
-    
+
     def get(self) -> pd.Series:
         assert self.target is not None, "Target is not computed!"
         
@@ -27,6 +19,9 @@ class Target:
         assert self.target is not None, "Target is not computed!"
         
         return len(self.target)
+    
+    def get_dates(self):
+        return pd.Series(self.target.index, name="date")
     
     def __getitem__(self, key: Any):
         assert self.target is not None, "Target is not computed!"
@@ -53,24 +48,45 @@ class Target:
                 stop = pd.Timestamp.max
             
             mask = (target.index >= start) & (target.index < stop)
-            return Target(task=self.task, target=target[mask])
+            return Target(ticker=self.ticker, task=self.task, target=target[mask])
         elif isinstance(key, int):
-            return Target(task=self.task, target=target[mask])
+            return Target(ticker=self.ticker, task=self.task, target=target[mask])
         elif isinstance(key, pd.Timestamp):
-            return Target(task=self.task, target=target[mask])
+            return Target(ticker=self.ticker, task=self.task, target=target[mask])
         else:
             raise IndexError("Index must be an integer, slice or Pandas Timestamp")
+        
 
+class TargetsList:
+    def __init__(self, task: Task, targets_list: List[Target]) -> None:
+        self.task = task
+        self.targets_list = targets_list
+        
+    def __len__(self):
+        return len(self.targets_list)
     
-class ClosePriceTarget(Target):
-    def __init__(self, stock_data: StockData, bars_count: int) -> None:
-        self.bars_count = bars_count
-        self.task = Task.REGRESSION
+    def __getitem__(self, key):
+        targets_list = []
         
-        self.target = self._calculate(stock_data)
+        for target in self.targets_list:
+            targets_list.append(target[key])
+            
+        return TargetsList(task=self.task, targets_list=targets_list)
+    
+    def get_target(self, index):
+        return self.targets_list[index]
+    
+    def __iter__(self):
+        self.iterator = 0
         
-    def _calculate(self, stock_data: StockData) -> pd.Series:
-        target = stock_data.get("close").shift(-self.bars_count)
-        target.name = f"close_target_{self.bars_count}_bars"
-        
-        return target
+        return self
+    
+    def __next__(self):
+        if self.iterator < len(self):
+            target = self.get_target(self.iterator)
+            self.iterator += 1
+            
+            return target
+        else:
+            raise StopIteration
+    

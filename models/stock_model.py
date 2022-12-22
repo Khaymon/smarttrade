@@ -1,4 +1,4 @@
-from target import Task
+from targets import Task
 
 
 class StockModel:

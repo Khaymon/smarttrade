@@ -12,7 +12,7 @@ class GBMRegressionModel(StockModel):
         self.model.fit(X, y, **kwargs)
         
     def predict(self, X: np.ndarray, **kwargs) -> np.ndarray:
-        predictions = self.model(X, **kwargs)
+        predictions = self.model.predict(X, **kwargs)
         
         return predictions
     

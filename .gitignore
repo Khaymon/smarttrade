@@ -10,6 +10,12 @@ __pycache__/
 # Kaggle
 kaggle.json
 
+# Catboost
+catboost_info/
+
+# Experiments
+experiments.ipynb
+
 # C extensions
 *.so
 

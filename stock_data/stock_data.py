@@ -58,7 +58,7 @@ class StockData:
             return data[key].copy()
         
     def get_dates(self) -> pd.Series:
-        return pd.Series(self.data.index)
+        return pd.Series(self.data.index, name="date")
     
     def from_date(self):
         return self.data.index.min()
@@ -110,21 +110,21 @@ class StockData:
         
 class StocksList:
     def __init__(self, stocks_list: List[StockData]) -> None:
-        self.stocks = {stock_data.ticker: stock_data for stock_data in stocks_list}
+        self.stocks_list = stocks_list
         
     def from_date(self) -> pd.Timestamp:
-        min_date = self.stocks[0].from_date()
+        min_date = self.stocks_list[0].from_date()
         
-        for idx in range(1, len(self.stocks)):
-            min_date = min(min_date, self.stocks[idx].from_date())
+        for idx in range(1, len(self.stocks_list)):
+            min_date = min(min_date, self.stocks_list[idx].from_date())
             
         return min_date
     
     def to_date(self) -> pd.Timestamp:
-        max_date = self.stocks[0].to_date()
+        max_date = self.stocks_list[0].to_date()
         
-        for idx in range(1, len(self.stocks)):
-            max_date = max(max_date, self.stocks[idx].to_date())
+        for idx in range(1, len(self.stocks_list)):
+            max_date = max(max_date, self.stocks_list[idx].to_date())
             
         return max_date
     
@@ -132,15 +132,31 @@ class StocksList:
         return self.from_date(), self.to_date()
     
     def __len__(self):
-        return len(self.stocks)
+        return len(self.stocks_list)
     
     def __getitem__(self, key: Any):
         stocks_list = []
-        for _, stock_data in self.stocks:
-            stock_data = stock_data[key]
-            stocks_list.append(stock_data)
+        for stock_data in self.stocks_list:
+            stocks_list.append(stock_data[key])
         
-        return StocksList(stocks_list)
+        return StocksList(stocks_list=stocks_list)
+    
+    def get_stock_data(self, index: int) -> StockData:
+        return self.stocks_list[index]
+    
+    def __iter__(self):
+        self.iterator = 0
+        
+        return self
+    
+    def __next__(self):
+        if self.iterator < len(self):
+            stock_data = self.get_stock_data(self.iterator)
+            self.iterator += 1
+            
+            return stock_data
+        else:
+            raise StopIteration
     
 
 class StockDataSplitter:
