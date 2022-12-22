@@ -1,1 +1,2 @@
 from .gbm_regression_model import GBMRegressionModel
+from .models_dict import MODELS_DICT

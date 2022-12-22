@@ -1,6 +1,3 @@
-from targets import Task
-
-
 class StockModel:
     def __init__(self):
         self.task = None

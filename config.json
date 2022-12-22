@@ -1,0 +1,15 @@
+{
+    "model_name": "gbm_regression",
+    "model_args": {},
+    "model_train_args": {},
+    "target_function": "close_price",
+    "target_function_args": {
+        "bars_count": 10
+    },
+    "data_path": "./data",
+    "tickers": [
+        "TSLA", "GOOG", "SLB", "RTX", "PYPL", "PGR", "MA", "KO", "LLY",
+        "META", "JNJ", "IBM", "HON", "GILD", "ELV", "DIS", "DE", "CVX"
+    ]
+
+}
