@@ -3,8 +3,11 @@ from typing import List
 
 
 class FeaturesList:
-    def __init__(self, features: List[StockFeature]) -> None:
-        self.features = features
+    def __init__(self, features: List[StockFeature] = None) -> None:
+        if features is None:
+            self.features = []
+        else:
+            self.features = features
         
     def append(self, feature: StockFeature) -> None:
         self.features.append(feature)

@@ -16,7 +16,7 @@ class MovingAggregateFeature(StockFeature):
         self.window = window
     
     def compute(self, stock_data: StockData) -> pd.Series:
-        feature = stock_data.get_column(self.column).rolling(self.window).agg(self.function_name)
+        feature = stock_data.get(self.column).rolling(self.window).agg(self.function_name)
         feature.name = f"{self.column}_{self.window}_{self.function_name}"
         
         return feature
@@ -25,6 +25,7 @@ class MovingAggregateFeature(StockFeature):
 class DayFeature(StockFeature):
     def compute(self, stock_data: StockData) -> pd.Series:
         days = stock_data.get_dates().dt.day
+        days.name = "day"
         
         return days
         
@@ -32,6 +33,7 @@ class DayFeature(StockFeature):
 class WeekdayFeature(StockFeature):
     def compute(self, stock_data: StockData) -> pd.Series:
         weekdays = stock_data.get_dates().dt.weekday
+        weekdays.name = "weekday"
         
         return weekdays
     
@@ -39,6 +41,7 @@ class WeekdayFeature(StockFeature):
 class MonthFeature(StockFeature):
     def compute(self, stock_data: StockData) -> pd.Series:
         months = stock_data.get_dates().dt.month
+        months.name = "name"
         
         return months
         
