@@ -7,6 +7,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Kaggle
+kaggle.json
+
 # C extensions
 *.so
 

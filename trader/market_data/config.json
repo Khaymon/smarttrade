@@ -1,9 +1,0 @@
-{
-    "api_key": "YOUR_API_KEY",
-    "tickers": ["AAPL"],
-    "time_interval": 15,
-    "time_units": "minute",
-    "start_date": "2018-02-18",
-    "finish_date": "2022-04-11",
-    "dataset_name": "tickers_sample"
-}
