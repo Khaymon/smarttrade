@@ -1,5 +1,5 @@
-# RL trading algorithms
-RL algorithms for high-frequency trading.
+# Trading algorithms
+Machine learning and deep learning algorithms for stocks trading.
 
 ## To-do
 - [X] Add data mining
