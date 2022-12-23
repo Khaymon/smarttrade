@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ## Downloading the data
 ### Stock market data
-Data is loaded by `yahoo-finance` module. You can use `yf_download_data.py` to use it.
+Data is loaded by `yahoo-finance` module. You can use `yf_download_data.py` for it.
 ```bash
 python yf_download_data.py
 ```
