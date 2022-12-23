@@ -1,7 +1,9 @@
 {
     "model_name": "gbm_regression",
     "model_args": {},
-    "model_train_args": {},
+    "model_train_args": {
+        "verbose": false
+    },
     "target_function": "close_price",
     "target_function_args": {
         "bars_count": 10
@@ -10,6 +12,6 @@
     "tickers": [
         "TSLA", "GOOG", "SLB", "RTX", "PYPL", "PGR", "MA", "KO", "LLY",
         "META", "JNJ", "IBM", "HON", "GILD", "ELV", "DIS", "DE", "CVX"
-    ]
-
+    ],
+    "metric": "MAPE"
 }

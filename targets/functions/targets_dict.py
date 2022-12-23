@@ -1,4 +1,4 @@
-from target_function import ClosePriceTargetFunction
+from .target_function import ClosePriceTargetFunction
 
 
 TARGETS_DICT = {

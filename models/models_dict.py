@@ -1,4 +1,4 @@
-from gbm_regression_model import GBMRegressionModel
+from .gbm_regression_model import GBMRegressionModel
 
 
 MODELS_DICT = {

@@ -2,13 +2,16 @@ import os
 import json
 from typing import Dict
 
-MODEL_NAME_FIELD = "model_name"
-MODEL_ARGS_FIELD = "model_args"
-MODEL_TRAIN_ARGS_FIELD = "model_train_args"
-TARGET_FUNCTION_FIELD = "target_function"
-TARGET_FUNCTION_ARGS_FIELD = "target_function_args"
-DATA_PATH_FIELD = "data_path"
-TICKERS_FIELD = "tickers"
+CONFIG_FIELDS = dict(
+    MODEL_NAME_FIELD = "model_name",
+    MODEL_ARGS_FIELD = "model_args",
+    MODEL_TRAIN_ARGS_FIELD = "model_train_args",
+    TARGET_FUNCTION_FIELD = "target_function",
+    TARGET_FUNCTION_ARGS_FIELD = "target_function_args",
+    DATA_PATH_FIELD = "data_path",
+    TICKERS_FIELD = "tickers",
+    METRIC_FIELD = "metric"
+)
 
 
 class Config:
@@ -18,20 +21,11 @@ class Config:
         with open(config_path, 'r') as config_file:
             config = json.load(config_file)
             
-        Config.set_field(MODEL_NAME_FIELD, config)
-        Config.check_field(MODEL_ARGS_FIELD, config)
-        Config.check_field(MODEL_TRAIN_ARGS_FIELD, config)
-        Config.check_field(TARGET_FUNCTION_FIELD, config)
-        Config.check_field(TARGET_FUNCTION_ARGS_FIELD, config)
-        Config.check_field(DATA_PATH_FIELD, config)
-        Config.check_field(TICKERS_FIELD, config)
+        for _, key in CONFIG_FIELDS.items():
+            self.set_field(key, config)
         
-        self.model_name = config[MODEL_NAME_FIELD]
-        self.model_args = config[MODEL_ARGS_FIELD]
+    def set_field(self, key: str, config: Dict):
+        assert key in config, f"Field {key} is not in config"
         
-        
-    def set_field(self, field: str, config: Dict):
-        assert field in config, f"Field {field} is not in config"
-        
-        setattr(self, field, config[field])
+        setattr(self, key, config[key])
     

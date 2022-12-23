@@ -24,7 +24,9 @@ class StockData:
             if not os.path.exists(data_path):
                 raise FileNotFoundError(f"File {data_path} isn't found")
             
-            data = pd.read_csv(data_path, parse_dates=["Date"])
+            file_name = os.path.join(data_path, ticker + ".csv")
+            
+            data = pd.read_csv(file_name, parse_dates=["Date"])
             self.ticker = ticker
             
             # Keeping only columns needed
@@ -157,15 +159,11 @@ class StocksList:
             return stock_data
         else:
             raise StopIteration
-    
-
-class StockDataSplitter:
+        
     @staticmethod
-    def split(stocks_list: StocksList, left_ratio: float) -> Tuple[StockData, StockData]:
-        from_date, to_date = stocks_list.dates_range()
-        border = from_date + (to_date - from_date) * left_ratio
-        
-        left_stocks_list = stocks_list[:border]
-        right_stocks_list = stocks_list[border:]
-        
-        return left_stocks_list, right_stocks_list
+    def from_tickers_list(tickers: List[str], data_path: str):
+        stocks_list = []
+        for ticker in tickers:
+            stocks_list.append(StockData(ticker, data_path=data_path))
+            
+        return StocksList(stocks_list)
