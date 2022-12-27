@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+from typing import List
 import os
 
 STOCKS_TICKERS = [
@@ -16,19 +17,31 @@ STOCKS_TICKERS = [
 DATA_PATH = "./data/"
 
 
+def download_data(tickers: List[str], from_date: pd.Timestamp, to_date: pd.Timestamp) -> pd.DataFrame:
+    data = yf.download(tickers, start=from_date, end=to_date, interval="1h")
+    data = pd.DataFrame(data).swaplevel(axis=1)
+    data.index.name = "Date"
+    data.index = data.index.tz_convert(None)
+        
+    return data
+
+
+def save_data(data: pd.DataFrame, data_path: str) -> None:
+    tickers = data.columns.get_level_values(0)
+    
+    for ticker in tickers:
+        ticker_data = data[ticker]
+        
+        file_name = os.path.join(data_path, ticker + ".csv")
+        ticker_data.to_csv(file_name)
+
+
 def main():
     from_date = pd.Timestamp.now() - pd.Timedelta(days=720)
     to_date = pd.Timestamp.now()
     
-    data = yf.download(STOCKS_TICKERS, start=from_date, end=to_date, interval="1h")
-    data = pd.DataFrame(data).swaplevel(axis=1)
-    data.index.name = "Date"
-
-    for ticker in STOCKS_TICKERS:
-        ticker_data = data[ticker]
-        
-        file_name = os.path.join(DATA_PATH, ticker + ".csv")
-        ticker_data.to_csv(file_name)
+    data = download_data(STOCKS_TICKERS, from_date, to_date)
+    save_data(data, DATA_PATH)
 
 
 if __name__ == "__main__":
