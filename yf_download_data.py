@@ -13,14 +13,25 @@ STOCKS_TICKERS = [
     "TJX", "GE", "C", "EL", "AMAT", "ADI", "NOC", "MMC", "MO", "REGN", "MRNA", "DUK", "NOW", "PYPL",
     "SO", "EOG", "BKNG", "PGR", "SLB", "VRTX"
 ]
-
-DATA_PATH = "./data/"
+DATA_PATH = "./data/market_data/"
+RENAME_DICT = {
+    "Date": "date",
+    "High": "high",
+    "Low": "low",
+    "Open": "open",
+    "Close": "close",
+    "Volume": "volume"
+}
+KEEP_COLUMNS = ["high", "low", "open", "close", "volume"]
 
 
 def download_data(tickers: List[str], from_date: pd.Timestamp, to_date: pd.Timestamp) -> pd.DataFrame:
     data = yf.download(tickers, start=from_date, end=to_date, interval="1h")
+    data = data.rename(RENAME_DICT, axis=1, level=0)
+    data = data[KEEP_COLUMNS]
     data = pd.DataFrame(data).swaplevel(axis=1)
-    data.index.name = "Date"
+    
+    data.index.name = "date"
     data.index = data.index.tz_convert(None)
         
     return data
@@ -31,6 +42,7 @@ def save_data(data: pd.DataFrame, data_path: str) -> None:
     
     for ticker in tickers:
         ticker_data = data[ticker]
+        ticker_data["ticker"] = ticker
         
         file_name = os.path.join(data_path, ticker + ".csv")
         ticker_data.to_csv(file_name)

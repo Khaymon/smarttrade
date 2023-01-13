@@ -1,25 +1,25 @@
-from .stock_feature import *
+from .feature import *
 from typing import List
 
 
 class FeaturesList:
-    def __init__(self, features: List[StockFeature] = None) -> None:
+    def __init__(self, features: List[Feature] = None) -> None:
         if features is None:
             self.features = []
         else:
             self.features = features
         
-    def append(self, feature: StockFeature) -> None:
+    def append(self, feature: Feature) -> None:
         self.features.append(feature)
         
-    def expand(self, features: List[StockFeature]) -> None:
+    def expand(self, features: List[Feature]) -> None:
         self.features += features
         
     def __iter__(self):
         self.iterator = 0
         return self
     
-    def __next__(self) -> StockFeature:
+    def __next__(self) -> Feature:
         assert self.features is not None, "Features are not set!"
         
         if self.iterator < len(self.features):
@@ -28,6 +28,13 @@ class FeaturesList:
             return feature
         else:
             raise StopIteration
+
+
+    def preprocess(self, stocks_data: StocksData) -> StocksData:
+        for feature in self:
+            stocks_data.add_feature(feature.get(stocks_data))
+        
+        return stocks_data
         
 
 class IndicatorsFeaturesList(FeaturesList):
