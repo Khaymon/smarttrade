@@ -35,7 +35,7 @@ Model preprocessors takes stocks data and target to prepare it for being placed 
 
 
 ### Models
-Of course, there are a models, which take the input produced by specific model preprocessor and make predictions.
+Of course, there are models, which take the input produced by specific model preprocessor and make predictions.
 
 ## Results
 | # | Train stocks | Test stocks | Train period                              | Test period                               | Target              | Algorithm         | Metric      |
