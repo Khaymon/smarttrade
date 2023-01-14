@@ -43,7 +43,7 @@ class IndicatorsFeaturesList(FeaturesList):
     def __init__(self) -> None:
         super().__init__()
         
-        functions = ["mean", "max", "min", "median"]
+        functions = ["mean", "max", "min", "median", "var"]
         columns = ["close", "open", "high", "low", "volume"]
         windows = [5, 10, 20]
         

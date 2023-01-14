@@ -36,6 +36,10 @@ class StocksData(TimeDataContainer):
                 return self._construct(data=data[key + ["ticker"]])
             else:
                 return self._construct(data=data[[key] + ["ticker"]])
+            
+            
+    def get_features_names(self):
+        return list(self.data.drop(["ticker"], axis=1).columns)
         
     
     def num_features(self):
