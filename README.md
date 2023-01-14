@@ -38,8 +38,8 @@ Model preprocessors takes stocks data and target to prepare it for being placed 
 Of course, there are a models, which take the input produced by specific model preprocessor and make predictions.
 
 ## Results
-| Experiment # | Train instruments | Test instruments | Train period                              | Test period                               | Target              | Algorithm         | Metric      |
+| # | Train stocks | Test stocks | Train period                              | Test period                               | Target              | Algorithm         | Metric      |
 | ------------ | ----------------- | ---------------- | ----------------------------------------- | ----------------------------------------- | ------------------- | ----------------- | ----------- |
-| 1            | AAPL              | AAPL             | 2021-01-25 14:30:00 - 2022-11-11 20:30:00 | 2022-11-14 14:30:00 - 2023-01-12 21:00:00 | Close Price +3 bars | CatBoostRegressor | 0.0127 MAPE |
-| 2            | AAPL              | AAPL             | 2021-01-25 14:30:00 - 2022-11-11 20:30:00 | 2022-11-14 14:30:00 - 2023-01-12 21:00:00 | Close Price +3 bars | Current Close     | 0.0098 MAPE |
+| 1            | AAPL              | AAPL             | 2021-01-25 14:30 - 2022-11-11 20:30 | 2022-11-14 14:30 - 2023-01-12 21:00 | Close Price +3 bars | CatBoostRegressor | 0.0127 MAPE |
+| 2            | AAPL              | AAPL             | 2021-01-25 14:30 - 2022-11-11 20:30 | 2022-11-14 14:30 - 2023-01-12 21:00 | Close Price +3 bars | Current Close     | 0.0098 MAPE |
 |              |                   |                  |                                           |                                           |                     |                   |             |
