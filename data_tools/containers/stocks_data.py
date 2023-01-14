@@ -10,6 +10,7 @@ class StocksData(TimeDataContainer):
     def __init__(self, files: Union[List[str], str] = None, data: pd.DataFrame = None):
         if data is not None:
             self.data = data
+            self.data = self.data.sort_index()
         else:
             if isinstance(files, List):
                 dfs_list = []
@@ -31,7 +32,14 @@ class StocksData(TimeDataContainer):
         if key is None:
             return self._construct(data=data)
         else:
-            return self._construct(data=data[key])
+            if isinstance(key, list):
+                return self._construct(data=data[key + ["ticker"]])
+            else:
+                return self._construct(data=data[[key] + ["ticker"]])
+        
+    
+    def num_features(self):
+        return self.data.drop("ticker", axis=1).shape[1]
 
 
     def get_tickers(self) -> List[str]:

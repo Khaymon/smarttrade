@@ -1,4 +1,4 @@
-class StockModel:
+class StocksModel:
     def __init__(self):
         self.task = None
         self.sampler = None

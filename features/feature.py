@@ -33,6 +33,34 @@ class MovingAggregateFeature(Feature):
         feature.name = f"{self.column}_{self.window}_{self.function_name}"
         
         return feature
+    
+    
+class DiffFeature(Feature):
+    def __init__(self, first_column: str, second_column: str) -> None:
+        super().__init__()
+        
+        self.first_column = first_column
+        self.second_column = second_column
+        
+    def _compute(self, ticker_data: pd.DataFrame) -> pd.Series:
+        diff = ticker_data["first_column"] / ticker_data["second_column"]
+        diff.name = f"{self.first_column}_{self.second_column}_diff"
+        
+        return diff
+
+
+class RatioFeature(Feature):
+    def __init__(self, first_column: str, second_column: str) -> None:
+        super().__init__()
+        
+        self.first_column = first_column
+        self.second_column = second_column
+        
+    def _compute(self, ticker_data: pd.DataFrame) -> pd.Series:
+        diff = ticker_data["first_column"] - ticker_data["second_column"]
+        diff.name = f"{self.first_column}_{self.second_column}_ratio"
+        
+        return diff
 
 
 class DayFeature(Feature):
@@ -54,7 +82,22 @@ class WeekdayFeature(Feature):
 class MonthFeature(Feature):
     def _compute(self, ticker_data: pd.DataFrame) -> pd.Series:
         months = ticker_data.get_dates().dt.month
-        months.name = "name"
+        months.name = "month"
         
         return months
         
+
+class OpenCloseDiffFeature(Feature):
+    def _compute(self, ticker_data: pd.DataFrame) -> pd.Series:
+        diff = ticker_data["open"] - ticker_data["close"]
+        diff.name = "open_close_diff"
+        
+        return diff
+    
+
+class HighLowDiffFeature(Feature):
+    def _compute(self, ticker_data: pd.DataFrame) -> pd.Series:
+        diff = ticker_data["high"] - ticker_data["low"]
+        diff.name = "high_low_diff"
+        
+        return diff

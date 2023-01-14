@@ -1,11 +1,11 @@
-from .stock_model import StockModel
+from .stocks_model import StocksModel
 from targets.task import Task
 
 from catboost import CatBoostRegressor
 import numpy as np
 
 
-class GBMRegressionModel(StockModel):
+class GBMRegressionModel(StocksModel):
     def __init__(self, **kwargs) -> None:
         self.model = CatBoostRegressor(**kwargs)
         self.task = Task.REGRESSION

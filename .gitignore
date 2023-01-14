@@ -16,6 +16,9 @@ kaggle.json
 # Catboost
 catboost_info/
 
+# Lightning logs
+lightning_logs/
+
 # Experiments
 experiments.ipynb
 

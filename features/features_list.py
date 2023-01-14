@@ -1,5 +1,7 @@
 from .feature import *
+
 from typing import List
+from itertools import product
 
 
 class FeaturesList:
@@ -9,7 +11,7 @@ class FeaturesList:
         else:
             self.features = features
         
-    def append(self, feature: Feature) -> None:
+    def append_feature(self, feature: Feature) -> None:
         self.features.append(feature)
         
     def expand(self, features: List[Feature]) -> None:
@@ -41,19 +43,14 @@ class IndicatorsFeaturesList(FeaturesList):
     def __init__(self) -> None:
         super().__init__()
         
-        close_moving_averages = [
-            MovingAggregateFeature(function_name="mean", column="close", window=5),
-            MovingAggregateFeature(function_name="mean", column="close", window=10),
-            MovingAggregateFeature(function_name="mean", column="close", window=20)
-        ]
+        functions = ["mean", "max", "min", "median"]
+        columns = ["close", "open", "high", "low", "volume"]
+        windows = [5, 10, 20]
         
-        close_moving_variances = [
-            MovingAggregateFeature(function_name="var", column="close", window=5),
-            MovingAggregateFeature(function_name="var", column="close", window=10),
-            MovingAggregateFeature(function_name="var", column="close", window=20)
-        ]
-        
-        self.expand(close_moving_averages)
-        self.expand(close_moving_variances)
-        
+        moving_aggregates = []
+        for function, column, window in product(functions, columns, windows):
+            feature = MovingAggregateFeature(function_name=function, column=column, window=window)
+            moving_aggregates.append(feature)
+            
+        self.expand(moving_aggregates)
         

@@ -18,17 +18,28 @@ Data is loaded by `yahoo-finance` module. You can use `yf_download_data.py` for 
 python yf_download_data.py
 ```
 
-## Main entities
-
+## Entities
 ### Containers
-Containers are classes wich contains some data in it.
-#### Data Containers
-Every type of market data should be placed in one of the __DataContainer__ inheritors.
-- __StockData.__ This entity holds a data for a concrete stock. You can create this by passing 1) a `ticker` and 2) raw pandas DataFrame or path to a folder where file `ticker`.csv is located. Both DataFrame and file should contain columns with names `date`, `low`, `open`, `volume`, `high` and `close`.
-- __StocksList.__ This entity contains the information about several stocks. It's needed when training a single model for different tickers.
+Containers are classes, which collect some data in it. Main class for stocks market data is `StocksData`. `StocksTarget` class is used to save a target for a concrete task.
 
-#### Task Containers
-`TaskContainer` class contains __DataContainer__ and __Target__.
+### Features
+Features are some functions from market data. Important thing to understand before constructing your own `Feature` is that function shouldn't look forward in time. `FeaturesList` is used to aggregate many of `Features` in one place.
 
-### Feature engineering
-When you need to preprocess your data in order to get more information from it you have to use __Feature__ class in one of its forms. This class expects its inheritors to override `compute` method which takes one of the data containers and returns a pandas Series with feature.
+
+### Target functions
+`TargetFunction` is a class, which defines a function creating a target data. It can be either regression or classification target.
+
+
+### Model preprocessors
+Model preprocessors takes stocks data and target to prepare it for being placed in a model.
+
+
+### Models
+Of course, there are a models, which take the input produced by specific model preprocessor and make predictions.
+
+## Results
+| Experiment # | Train instruments | Test instruments | Train period                              | Test period                               | Target              | Algorithm         | Metric      |
+| ------------ | ----------------- | ---------------- | ----------------------------------------- | ----------------------------------------- | ------------------- | ----------------- | ----------- |
+| 1            | AAPL              | AAPL             | 2021-01-25 14:30:00 - 2022-11-11 20:30:00 | 2022-11-14 14:30:00 - 2023-01-12 21:00:00 | Close Price +3 bars | CatBoostRegressor | 0.0127 MAPE |
+| 2            | AAPL              | AAPL             | 2021-01-25 14:30:00 - 2022-11-11 20:30:00 | 2022-11-14 14:30:00 - 2023-01-12 21:00:00 | Close Price +3 bars | Current Close     | 0.0098 MAPE |
+|              |                   |                  |                                           |                                           |                     |                   |             |
