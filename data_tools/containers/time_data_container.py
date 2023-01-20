@@ -34,11 +34,11 @@ class TimeDataContainer:
     
     
     def start_date(self) -> pd.Timestamp:
-        return self.data.index.min()
+        return self.data.reset_index().groupby("ticker")["date"].min().min()
 
 
     def end_date(self) -> pd.Timestamp:
-        return self.data.index.max()
+        return self.data.reset_index().groupby("ticker")["date"].max().min()
 
 
     def dates_range(self) -> Tuple[pd.Timestamp, pd.Timestamp]:
@@ -51,3 +51,19 @@ class TimeDataContainer:
     
     def __len__(self) -> int:
         return len(self.data)
+    
+    
+    def __iter__(self):
+        self.iterator = 0
+        
+        return self
+    
+
+    def __next__(self):
+        if (self.iterator < len(self)):
+            data = self.data.iloc[self.iterator].copy()
+            self.iterator += 1
+        else:
+            raise StopIteration
+
+        return data

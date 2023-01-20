@@ -33,6 +33,7 @@ def download_data(tickers: List[str], from_date: pd.Timestamp, to_date: pd.Times
     
     data.index.name = "date"
     data.index = data.index.tz_convert(None)
+    
         
     return data
 

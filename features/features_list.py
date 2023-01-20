@@ -4,7 +4,7 @@ from typing import List
 from itertools import product
 
 
-class FeaturesList:
+class FeaturesList(Feature):
     def __init__(self, features: List[Feature] = None) -> None:
         if features is None:
             self.features = []
@@ -32,10 +32,15 @@ class FeaturesList:
             raise StopIteration
 
 
-    def preprocess(self, stocks_data: StocksData) -> StocksData:
-        for feature in self:
-            stocks_data.add_feature(feature.get(stocks_data))
-        
+    def fit(self, stocks_data: StocksData) -> None:
+        for feature in self.features:
+            feature.fit(stocks_data)
+            
+    
+    def transform(self, stocks_data: StocksData) -> StocksData:
+        for feature in self.features:
+            feature.transform(stocks_data)
+            
         return stocks_data
         
 

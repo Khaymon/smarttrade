@@ -82,7 +82,7 @@ class LSTMLightningModel(pl.LightningModule):
         
     
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
         
         return optimizer
     
@@ -173,6 +173,7 @@ class LSTMRegressionModel(StocksModel):
         predictions = []
         with torch.no_grad():
             for batch in test_loader:
+                print(batch["inputs"].shape)
                 predictions.append(self.model(batch["inputs"])).cpu()
                 
         predictions = torch.vstack(predictions)
