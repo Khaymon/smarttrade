@@ -4,7 +4,7 @@ Hello there👋 It's a minimalistic repository with machine learning and deep le
 ## Table of contents
 1. [Installation](#installation)
 2. [Downloading the data](#downloading)
-    1. [Stock market data](#download_stock_market_data)
+    1. [Stock market data](#downloading_stock_market_data)
     2. [News data](#downloading_news_data)
 3. [Entities](#entities)
     1. [Containers](#containers)
