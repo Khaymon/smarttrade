@@ -1,4 +1,12 @@
 catboost==1.0.4
 numpy==1.22.4
 pandas==1.3.4
+pytorch_lightning==1.6.2
+scikit_learn==1.2.0
+selenium==4.7.2
+stock_data==0.0
+torch==1.13.1
+torchmetrics==0.8.1
+tqdm==4.64.1
+transformers==4.15.0
 yfinance==0.1.70
