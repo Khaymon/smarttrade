@@ -1,19 +1,6 @@
 # 💰 Trading algorithms
-Hello there👋 It's a minimalistic repository with machine learning and deep learning algorithms for stock market trading. Please, see `examples` directory with code snippets.
-
-## Table of contents
-1. [Installation](#installation)
-2. [Downloading the data](#downloading)
-    1. [Stock market data](#downloading_stock_market_data)
-    2. [News data](#downloading_news_data)
-3. [Entities](#entities)
-    1. [Containers](#containers)
-    2. [Features](#features)
-    3. [Target functions](#target_functions)
-    4. [Model preprocessors](#model_preprocessors)
-    5. [Models](#models)
-4. [Results](#results)
-## Installation <a name="installation"></a>
+Hello there👋 It's a minimalistic repository with machine learning and deep learning algorithms for stock market trading. For examples and code snippets, please, see the `examples` directory.
+## Installation
 - Clone the repo and cd into it:
 ```bash
 git clone https://github.com/Khaymon/trading-algorithms.git
