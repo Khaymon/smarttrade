@@ -1,16 +1,14 @@
+import argparse
 from typing import List, Dict
 from tqdm import tqdm
 import pandas as pd
+import re
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
-EXECUTABLE_PATH = "./resources/chromedriver.exe"
-
-STOCK_MARKET_NEWS_URL = "https://www.investing.com/news/stock-market-news/"
-POLITICS_NEWS_URL = "https://www.investing.com/news/politics/"
-WORLD_NEWS_URL = "https://www.investing.com/news/world-news"
+BASE_URL = "https://www.investing.com/news/[AREA]/"
 
 
 def get_driver(executable_path: str, page_load_timeout: int = 2):
@@ -43,9 +41,9 @@ def get_page_articles_links(driver: webdriver.Chrome, link: str) -> List[str]:
         return []
 
 
-def get_all_links(driver, link: str, num_pages: int = 3000) -> List[str]:
+def get_all_links(driver, link: str, num_pages: int = 3000, from_page: int = 1) -> List[str]:
     links = []
-    for page in tqdm(range(1, num_pages + 1)):
+    for page in tqdm(range(from_page, from_page + num_pages)):
         current_link = link + str(page)
         
         links.extend(get_page_articles_links(driver, current_link))
@@ -86,9 +84,9 @@ def get_pages_data(driver: webdriver.Chrome, links: List[str]) -> List[Dict]:
     return data
 
 
-def get_news(driver: webdriver.Chrome, link: str, num_pages: int = 3000) -> List[Dict]:
-    links = get_all_links(driver, link, num_pages)
-    data = get_pages_data(driver, links)
+def get_news(driver: webdriver.Chrome, link: str, num_pages: int = 3000, from_page: int = 1) -> List[Dict]:
+    links = get_all_links(driver=driver, link=link, num_pages=num_pages, from_page=from_page)
+    data = get_pages_data(driver=driver, links=links)
     
     return data
 
@@ -102,9 +100,47 @@ def preprocess_data(data: List[Dict]) -> pd.DataFrame:
     return df
 
 
-if __name__ == "__main__":
-    driver = get_driver(EXECUTABLE_PATH)
-    data = get_news(driver, POLITICS_NEWS_URL, 100)
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        prog="investing.com news scraper",
+        description="Tool for scraping news from the investing.com"
+    )
+    
+    parser.add_argument("-d", "--driver", type=str, dest="driver_path", 
+                        help="Path to the Chrome driver executable")
+    parser.add_argument("-a", "--area", type=str, dest="area", choices=["stock-market", "politics", "economy"],
+                        help="News area to scrape")
+    parser.add_argument("-n", "--num-pages", type=int, dest="num_pages", default=500,
+                        help="Number of news pages to scrape")
+    parser.add_argument("-b", "--begin-page", type=int, dest="from_page", default=1,
+                        help="Page number to start with")
+    parser.add_argument("-o", "--output-path", type=str, dest="output_path",
+                        help="Path of the output .csv file")
+    
+    return parser.parse_args()
+
+
+def main():
+    arguments = parse_arguments()
+    
+    driver = get_driver(arguments.driver_path)
+    
+    if arguments.area == "stock-market":
+        area_url = re.sub("\[AREA\]", "stock-market-news", BASE_URL)
+    elif arguments.area == "politics":
+        area_url = re.sub("\[AREA\]", "politics", BASE_URL)
+    elif arguments.area == "economy":
+        area_url = re.sub("\[AREA\]", "economy", BASE_URL)
+    else:
+        raise ValueError("Unknown news area")
+    
+    data = get_news(driver=driver, link=area_url, num_pages=arguments.num_pages,
+                    from_page=arguments.from_page)
 
     df = preprocess_data(data)
-    df.to_csv("politics_news.csv")
+    df.to_csv(arguments.output_path)
+
+
+if __name__ == "__main__":
+    main()
+    
