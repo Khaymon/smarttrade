@@ -26,13 +26,16 @@ pip install -r requirements.txt
 
 ## Downloading the data <a name="downloading"></a>
 ### Stock market data <a name="downloading_stock_market_data"></a>
-Data is loaded by `yahoo-finance` module. You can use `yf_download_data.py` for it.
+Data is loaded by `yahoo-finance` module. You can use the `yf_download_data.py` file to get the TOP-100 US liquidity stocks market data.
 ```bash
 python yf_download_data.py
 ```
 
 ### News data <a name="downloading_news_data"></a>
-Scrapping is our everything. Data is collected by selenium package. You need to install ChromeDriver in order to scrape investingview.com website. In the file `investing_view_scrape.py` you can change URL in order to receive either political or finance news.
+Scrapping is our everything. Data is collected by selenium package. You need to install ChromeDriver in order to scrape investingview.com website. In the file `investing_view_scrape.py` you can change URL in order to receive either political or finance news. In order to get news data, just call
+```bash
+python yf_download_data.py
+```
 
 ## Entities <a name="entities"></a>
 ### Containers <a name="containers"></a>
