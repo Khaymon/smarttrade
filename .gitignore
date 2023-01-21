@@ -1,6 +1,7 @@
 # Datasets
 *.csv
 *.pkl
+*.parquet
 
 # Runnable
 *.exe

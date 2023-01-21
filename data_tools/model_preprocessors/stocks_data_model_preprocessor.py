@@ -1,6 +1,7 @@
 from ..containers import StocksData, StocksTarget
 import numpy as np
 import pandas as pd
+from datetime import datetime
 import torch
 from typing import List, Any
 
@@ -14,7 +15,7 @@ class StocksDataModelPreprocessor:
         start_date, end_date = stocks_data.dates_range()
         
         if threshold is not None:
-            threshold = pd.Timestamp(threshold)
+            threshold = pd.Timestamp(threshold).to_datetime64()
         else:
             threshold = start_date + (end_date - start_date) * left_ratio
         

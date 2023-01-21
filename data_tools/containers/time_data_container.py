@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+from datetime import datetime
 from typing import Tuple
 
 
@@ -18,12 +20,9 @@ class TimeDataContainer:
             stop = key.stop
             
             if start is None:
-                start = pd.Timestamp.min
+                start = self.start_date()
             if stop is None:
-                stop = pd.Timestamp.max
-            
-            if not isinstance(start, pd.Timestamp) or not isinstance(stop, pd.Timestamp):
-                raise IndexError("Slice must contain only pandas Timestamps")
+                stop = self.end_date()
 
             mask = (self.data.index >= start) & (self.data.index < stop) 
             return self._construct(self.data[mask].copy())

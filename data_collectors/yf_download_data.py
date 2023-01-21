@@ -35,7 +35,6 @@ def download_data(tickers: List[str], from_date: pd.Timestamp, to_date: pd.Times
     data = pd.DataFrame(data).swaplevel(axis=1)
     
     data.index.name = "date"
-    data.index = data.index.tz_convert(None)
     
     return data
 
@@ -47,8 +46,8 @@ def save_data(data: pd.DataFrame, data_path: str) -> None:
         ticker_data = data[ticker].copy()
         ticker_data["ticker"] = ticker
         
-        file_name = os.path.join(data_path, ticker + ".csv")
-        ticker_data.to_csv(file_name)
+        file_name = os.path.join(data_path, ticker + ".parquet")
+        ticker_data.to_parquet(file_name)
 
 
 def parse_arguments():
@@ -58,7 +57,7 @@ def parse_arguments():
     )
     
     parser.add_argument("-d", "--output-dir", type=str, dest="output_dir",
-                        help="Output directory for downloaded data")
+                        help="Output directory for downloaded data", required=True)
     parser.add_argument("-t", "--tikers", type=str, nargs="+", default="all", choices=STOCKS_TICKERS,
                         dest="tickers", help="Tickers to download")
     parser.add_argument("-i", "--interval", type=str, default="1h", dest="time_interval",
@@ -69,6 +68,9 @@ def parse_arguments():
 
 def main():
     arguments = parse_arguments()
+    print(arguments)
+    if arguments.tickers == "all":
+        arguments.tickers = STOCKS_TICKERS
     
     from_date = pd.Timestamp.now() - pd.Timedelta(days=720)
     to_date = pd.Timestamp.now()

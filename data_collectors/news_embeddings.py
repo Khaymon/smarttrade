@@ -79,7 +79,7 @@ def main():
     embeddings = torch.vstack(embeddings_list).numpy()
     embeddings_df = pd.DataFrame(embeddings, index=news_data.index)
     
-    embeddings_df.to_csv(arguments.output_file)
+    embeddings_df.to_parquet(arguments.output_file)
     
     
 if __name__ == "__main__":

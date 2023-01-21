@@ -60,10 +60,10 @@ class StocksData(TimeDataContainer):
         
     @staticmethod
     def read_ticker_data(file_path: str) -> pd.DataFrame:
-        data = pd.read_csv(file_path, parse_dates=["date"])
+        data = pd.read_parquet(file_path)
         
-        data = data.set_index("date")
         data = data.sort_index()
+        data.index = data.index.tz_convert(None)
         data = data.dropna()
         
         return data
