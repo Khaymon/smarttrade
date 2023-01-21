@@ -3,6 +3,7 @@ from data_tools.containers import StocksData
 import re
 import numpy as np
 import pandas as pd
+from typing import Union
 from sklearn.decomposition import PCA
 
 
@@ -10,19 +11,32 @@ class Feature:
     def fit(self, stocks_data: StocksData):
         raise NotImplementedError
     
-    def transform(self, stocks_data: StocksData) -> StocksData:
+    def transform(self, stocks_data: Union[StocksData, pd.DataFrame]) -> StocksData:
         targets_list = []
-        for ticker in stocks_data.get_tickers():
-            ticker_data = stocks_data.filter_ticker(ticker).get_data()
-            ticker_target = self._compute(ticker_data)
-            
-            ticker_column = pd.Series(ticker, index=ticker_target.index, name="ticker")
-            ticker_target = pd.concat([ticker_target, ticker_column], axis=1)
-            
-            targets_list.append(ticker_target)
+        if type(stocks_data) == StocksData:
+            for ticker in stocks_data.get_tickers():
+                ticker_data = stocks_data.filter_ticker(ticker).get_data()
+                ticker_target = self._compute(ticker_data)
+                
+                ticker_column = pd.Series(ticker, index=ticker_target.index, name="ticker")
+                ticker_target = pd.concat([ticker_target, ticker_column], axis=1)
+                
+                targets_list.append(ticker_target)
+        else:
+            for ticker in stocks_data["ticker"].unique():
+                ticker_data = stocks_data[stocks_data["ticker"] == ticker].copy()
+                ticker_target = self._compute(ticker_data)
+                
+                ticker_column = pd.Series(ticker, index=ticker_target.index, name="ticker")
+                ticker_target = pd.concat([ticker_target, ticker_column], axis=1)
+                
+                targets_list.append(ticker_target)
         
         target_df = pd.concat(targets_list)
-        stocks_data.add_feature(target_df)
+        if type(stocks_data) == StocksData:
+            stocks_data.add_feature(target_df)
+        else:
+            stocks_data.merge(target_df, how="left", on=["date", "ticker"])
         
         return stocks_data
     

@@ -3,11 +3,14 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import torch
-from typing import List, Any
+from typing import List, Any, Union
 
 
 class StocksDataModelPreprocessor:
-    def preprocess(self, stocks_data: StocksData, target: StocksTarget, **kwargs) -> Any:
+    def preprocess(self, 
+                   stocks_data: Union[StocksData, pd.DataFrame], 
+                   target: Union[StocksTarget, pd.DataFrame] = None,
+                   **kwargs) -> Any:
         raise NotImplementedError
     
     @staticmethod
@@ -26,25 +29,45 @@ class StocksDataModelPreprocessor:
         
         
 class SimpleModelPreprocessor(StocksDataModelPreprocessor):
-    def preprocess(self, stocks_data: StocksData, target: StocksTarget, dropna: bool = True, return_tensors: bool = True):
-        stocks_data_df = stocks_data.get_data()
-        target_df = target.get_data()
+    def preprocess(self, 
+                   stocks_data: Union[StocksData, pd.DataFrame], 
+                   target: Union[StocksTarget, pd.DataFrame] = None,
+                   dropna: bool = True, 
+                   return_tensors: bool = True):
         
-        full_data = pd.merge(stocks_data_df, target_df, on=["date", "ticker"])
-        
-        if dropna:
-            full_data = full_data.dropna()
+        if type(stocks_data) == StocksData:
+            stocks_data_df = stocks_data.get_data()
         else:
-            full_data = full_data.dropna(subset=[target.target_name])
-        
-        X = full_data.drop(["ticker", target.target_name], axis=1).to_numpy()
-        y = full_data[target.target_name].to_numpy()
-        
-        if return_tensors:
-            X = torch.tensor(X)
-            y = torch.tensor(y)
+            stocks_data_df = stocks_data.get_data()
             
-        return X, y
+        if target is not None:
+            if type(target) == StocksTarget:
+                target_df = target.get_data()
+            else:
+                target_df = target.get_data()
+        
+            full_data = pd.merge(stocks_data_df, target_df, on=["date", "ticker"])
+            if dropna:
+                full_data = full_data.dropna()
+            else:
+                full_data = full_data.dropna(subset=[target.target_name])
+        
+            X = full_data.drop(["ticker", target.target_name], axis=1).to_numpy()
+            y = full_data[target.target_name].to_numpy()
+        
+            if return_tensors:
+                X = torch.tensor(X)
+                y = torch.tensor(y)
+                
+            return X, y
+        else:
+            stocks_data_df = stocks_data_df.dropna()
+            X = stocks_data_df.drop(["ticker"], axis=1).to_numpy()
+            
+            if return_tensors:
+                X = torch.tensor(X)
+            
+            return X
 
 
 class SequenceModelPreprocessor(StocksDataModelPreprocessor):
@@ -52,18 +75,27 @@ class SequenceModelPreprocessor(StocksDataModelPreprocessor):
         self.sequence_length = sequence_lenght
         
     
-    def preprocess(self, stocks_data: StocksData, target: StocksTarget, return_tensors=True):
+    def preprocess(self, 
+                   stocks_data: Union[StocksData, pd.DataFrame], 
+                   target: Union[StocksTarget, pd.DataFrame] = None,
+                   return_tensors=True):
         simple_preprocessor = SimpleModelPreprocessor()
         X_sequences = []
         y_sequences = []
         
         for ticker in stocks_data.get_tickers():
             ticker_data = stocks_data.filter_ticker(ticker)
-            X, y = simple_preprocessor.preprocess(ticker_data, target, return_tensors=return_tensors)
+            if target is not None:
+                X, y = simple_preprocessor.preprocess(ticker_data, target, return_tensors=return_tensors)
+            else:
+                X = simple_preprocessor.preprocess(ticker_data, target, return_tensors=return_tensors)
             
             for idx in range(0, len(X) - self.sequence_length):
                 X_sequences.append(X[idx:idx + self.sequence_length])
-                y_sequences.append(y[idx:idx + self.sequence_length])
+                if target is not None:
+                    y_sequences.append(y[idx:idx + self.sequence_length])
                     
-                
-        return X_sequences, y_sequences
+        if target is not None:
+            return X_sequences, y_sequences
+        else:
+            return X_sequences
