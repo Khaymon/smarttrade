@@ -58,3 +58,8 @@ Of course, there are models, which take the input produced by specific model pre
 
 ## Results <a name="results"></a>
 Please, check results in results.md file.
+
+## Todo
+
+- [ ] Write backtesting class
+- [ ] Experiment with only news headers embeddings
