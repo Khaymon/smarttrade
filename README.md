@@ -13,6 +13,7 @@ Hello there👋 It's a minimalistic repository with machine learning and deep le
     4. [Model preprocessors](#model_preprocessors)
     5. [Models](#models)
 4. [Results](#results)
+5. [Todo](#todo)
 ## Installation <a name="installation"></a>
 - Clone the repo and cd into it:
 ```bash
@@ -59,7 +60,7 @@ Of course, there are models, which take the input produced by specific model pre
 ## Results <a name="results"></a>
 Please, check results in results.md file.
 
-## Todo
+## Todo <a name="todo"></a>
 
 - [ ] Write backtesting class
 - [ ] Experiment with only news headers embeddings
