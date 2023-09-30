@@ -5,7 +5,7 @@ from .base_container import BaseContainer
 
 
 @dataclass
-class TextContainer(BaseContainer):
+class ArticleContainer(BaseContainer):
     text: str
     header: T.Optional[str]
     link: T.Optional[str]
